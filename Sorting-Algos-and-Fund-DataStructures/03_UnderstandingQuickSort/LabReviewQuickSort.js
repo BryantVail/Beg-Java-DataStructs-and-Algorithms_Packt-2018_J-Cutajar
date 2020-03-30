@@ -9,6 +9,22 @@ let list = document.querySelector("#ctl04n0Nodes").querySelectorAll("table");
 let parentOfNodeList = document.querySelector("#ctl04n0Nodes");
 let parentOfNodeListId = "ctl04n0Nodes";
 
+UILabReview.addChildren = function(node, listOfNodes) {
+  listOfNodes.forEach(function(element) {
+    node.appendChild(element);
+  });
+};
+
+UILabReview.deleteAllChildren = function(nodeWithChildren) {
+  //define first or last child
+  let lastChild = nodeWithChildren.lastElementChild;
+
+  while (lastChild) {
+    nodeWithChildren.removeChild(lastChild);
+    lastChild = nodeWithChildren.lastElementChild;
+  }
+};
+
 SortAlgorithm.swap = function(list, swapIndex, index, isInnerHTML) {
   //bigger value that's going to the back of the partition
   //-> goes into the temp value so the smaller number
@@ -43,6 +59,41 @@ UILabReview.getProviderValue = function(listItemOfTheDOM) {
   return UILabReview.getTextContent(listItemOfTheDOM).slice(
     UILabReview.getTextContent(listItemOfTheDOM).indexOf(delimiter)
   );
+};
+
+UILabReview.getPatientName = function(element) {
+  const delimiter = "(";
+  const string = UILabReview.getTextContent(element);
+  return string.substring(0, string.indexOf(delimiter));
+};
+
+UILabReview.orderByPatient = function(elementArray) {
+  let startingPoint = 0;
+  let providerPatientCount = 1;
+  let patients = [];
+  for (let i = 1; i < elementArray.length; i++) {
+    while (
+      UILabReview.getProviderValue(elementArray[startingPoint]) ===
+      UILabReview.getProviderValue(elementArray[i])
+    ) {
+      providerPatientCount++;
+      i++;
+    }
+    // if 2 or more patients, sort
+    if (providerPatientCount > 1) {
+      SortAlgorithm.quickSort(
+        elementArray,
+        startingPoint,
+        i - 1,
+        UILabReview.getPatientName
+      );
+    }
+
+    //reset
+    startingPoint = i;
+    i++;
+    providerPatientCount = 1;
+  }
 };
 
 //creating the pivot
@@ -91,7 +142,7 @@ SortAlgorithm.partition = function(array, start, end, textContentFunction) {
   }
   //return pivot position
   return x + 1;
-}; //end function
+}; //end SortAlgorithm.partition function
 
 SortAlgorithm.quickSort = function(array, start, end, derivitiveFunction) {
   //if(array.length > 1){continue}
@@ -120,22 +171,6 @@ SortAlgorithm.quickSort = function(array, start, end, derivitiveFunction) {
 
 //UILabReview//UILabReview//UILabReview
 
-UILabReview.deleteChildren = function(nodeWithChildren) {
-  //define first or last child
-  let lastChild = nodeWithChildren.lastElementChild;
-
-  while (lastChild) {
-    nodeWithChildren.removeChild(lastChild);
-    lastChild = nodeWithChildren.lastElementChild;
-  }
-};
-
-UILabReview.addChildren = function(node, listOfNodes) {
-  listOfNodes.forEach(function(element) {
-    node.appendChild(element);
-  });
-};
-
 //run this to sort the values
 UILabReview.sortLabReview = function(idOfParentNodeOfList, childNodeListType) {
   let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
@@ -147,45 +182,6 @@ UILabReview.sortLabReview = function(idOfParentNodeOfList, childNodeListType) {
     childNodeList.length - 1,
     UILabReview.getProviderValue
   );
-};
-
-// list.forEach(function(element) {
-//   const delimiter = "(";
-//   let text = element
-//     .querySelectorAll("td")[3]
-//     .textContent.slice(
-//       element.querySelectorAll("td")[3].textContent.indexOf(delimiter)
-//     );
-//   console.log(text);
-// });
-
-UILabReview.listArrayText = function(list) {
-  const delimiter = "(";
-  for (let i = 0; i < list.length - 1; i++) {
-    let text = list[i]
-      .querySelectorAll("td")[3]
-      .textContent.slice(
-        list[i].querySelectorAll("td")[3].textContent.indexOf(delimiter)
-      );
-    console.log(text);
-  }
-};
-
-UILabReview.listElementText = function(listOfElements, swapIndex, index) {
-  const delimiter = "(";
-  let list;
-  list = listOfElements;
-  let swapText = list[swapIndex]
-    .querySelectorAll("td")[3]
-    .textContent.slice(
-      list[swapIndex].querySelectorAll("td")[3].textContent.indexOf(delimiter)
-    );
-  console.log(`swap: ${swapText}`);
-
-  let indexText = list[index]
-    .querySelectorAll("td")[3]
-    .textContent.slice(
-      list[index].querySelectorAll("td")[3].textContent.indexOf(delimiter)
-    );
-  console.log(`index: ${indexText}`);
+  let elementList = parentNode.querySelectorAll(childNodeListType);
+  UILabReview.orderByPatient(elementList);
 };
