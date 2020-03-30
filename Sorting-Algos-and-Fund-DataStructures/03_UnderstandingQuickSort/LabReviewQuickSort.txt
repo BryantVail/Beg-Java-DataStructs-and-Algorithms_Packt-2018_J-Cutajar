@@ -9,37 +9,20 @@ let list = document.querySelector("#ctl04n0Nodes").querySelectorAll("table");
 let parentOfNodeList = document.querySelector("#ctl04n0Nodes");
 let parentOfNodeListId = "ctl04n0Nodes";
 
-SortAlgorithm.swap = function(list, swapIndex, index, innerHTMLFunction) {
+SortAlgorithm.swap = function(list, swapIndex, index) {
   //bigger value that's going to the back of the partition
   //-> goes into the temp value so the smaller number
   //-> can be moved to the front
-  var temp = innerHTMLFunction(list[swapIndex]);
-  innerHTMLFunction(list[swapIndex]) = innerHTMLFunction(list[index]);
-  innerHTMLFunction(list[index]) = temp;
+  var temp = list[swapIndex].querySelectorAll("td")[3].innerHTML;
+  list[swapIndex].querySelectorAll("td")[3].innerHTML = list[
+    index
+  ].querySelectorAll("td")[3].innerHTML;
+  list[index].querySelectorAll("td")[3].innerHTML = temp;
   return list;
 };
 
-UILabReview.getInnerHTML = function(listItemOfTheDOM) {
-  return listItemOfTheDOM.querySelectorAll("td")[3].innerHTML;
-};
-
-UILabReview.getTextContent = function(listItemOfTheDOM) {
-  return listItemOfTheDOM.querySelectorAll("td")[3].textContent;
-};
-
-UILabReview.getProviderValue = function(listItemOfTheDOM, delimiter) {
-  UILabReview.getTextContent(listItemOfTheDOM).slice(
-    UILabReview.getTextContent(listItemOfTheDOM).indexOf(delimiter)
-  );
-};
-
 //creating the pivot
-SortAlgorithm.partitionLabReview = function(
-  array,
-  start,
-  end,
-  textContentFunction
-) {
+SortAlgorithm.partitionLabReview = function(array, start, end) {
   //delimiter for combined text field
   const delimiter = "(";
 
@@ -110,7 +93,6 @@ UILabReview.addChildren = function(node, listOfNodes) {
   });
 };
 
-//run this to sort the values
 UILabReview.sortLabReview = function(idOfParentNodeOfList, childNodeListType) {
   let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
   let childNodeList = parentNode.querySelectorAll(childNodeListType);
