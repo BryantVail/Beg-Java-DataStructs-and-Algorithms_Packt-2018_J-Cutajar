@@ -136,6 +136,7 @@ SortAlgorithm.partition = function(array, start, end, textContentFunction) {
   //put the pivot directly above the last value that
   //-> was lessThan the pivot
   if (textContentFunction) {
+    // true indicates that the 'innerHTML' should be swapped
     SortAlgorithm.swap(array, x + 1, end, true);
   } else {
     SortAlgorithm.swap(array, x + 1, end);
@@ -172,7 +173,7 @@ SortAlgorithm.quickSort = function(array, start, end, derivitiveFunction) {
 //UILabReview//UILabReview//UILabReview
 
 //run this to sort the values
-UILabReview.sortLabReview = function(idOfParentNodeOfList, childNodeListType) {
+UILabReview.sortByProvider = function(idOfParentNodeOfList, childNodeListType) {
   let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
   let childNodeList = parentNode.querySelectorAll(childNodeListType);
 
@@ -182,6 +183,18 @@ UILabReview.sortLabReview = function(idOfParentNodeOfList, childNodeListType) {
     childNodeList.length - 1,
     UILabReview.getProviderValue
   );
-  let elementList = parentNode.querySelectorAll(childNodeListType);
-  UILabReview.orderByPatient(elementList);
+
+  UILabReview.orderByPatient(sortedListOfNodes);
+};
+
+UILabReview.sortByPatient = function(idOfParentNodeOfList, childNodeListType) {
+  let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
+  let childNodeList = parentNode.querySelectorAll(childNodeListType);
+
+  const sortedListOfNodes = SortAlgorithm.quickSort(
+    childNodeList,
+    0,
+    childNodeList.length - 1,
+    UILabReview.getPatientName
+  );
 };
