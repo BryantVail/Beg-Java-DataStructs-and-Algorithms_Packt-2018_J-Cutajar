@@ -4,10 +4,9 @@ function UILabReview() {}
 
 function SortAlgorithm() {}
 
-//define the list of nodes and the parentId
-let list = document.querySelector("#ctl04n0Nodes").querySelectorAll("table");
-let parentOfNodeList = document.querySelector("#ctl04n0Nodes");
-let parentOfNodeListId = "ctl04n0Nodes";
+// document.querySelector("#sort-button").addEventListener("click", function(e) {
+//   e.preventDefault();
+// });
 
 UILabReview.addChildren = function(node, listOfNodes) {
   listOfNodes.forEach(function(element) {
@@ -70,7 +69,7 @@ UILabReview.getPatientName = function(element) {
 UILabReview.orderByPatient = function(elementArray) {
   let startingPoint = 0;
   let providerPatientCount = 1;
-  let patients = [];
+
   for (let i = 1; i < elementArray.length; i++) {
     while (
       UILabReview.getProviderValue(elementArray[startingPoint]) ===
@@ -173,28 +172,36 @@ SortAlgorithm.quickSort = function(array, start, end, derivitiveFunction) {
 //UILabReview//UILabReview//UILabReview
 
 //run this to sort the values
-UILabReview.sortByProvider = function(idOfParentNodeOfList, childNodeListType) {
-  let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
-  let childNodeList = parentNode.querySelectorAll(childNodeListType);
+UILabReview.sortByProvider = function(idOfContainer, childNodeListType) {
+  let container = document.querySelector(`#${idOfContainer}`);
+  let parentNodes = container.querySelectorAll(`div`);
 
-  const sortedListOfNodes = SortAlgorithm.quickSort(
-    childNodeList,
-    0,
-    childNodeList.length - 1,
-    UILabReview.getProviderValue
-  );
+  parentNodes.forEach(function(parentNode) {
+    let childNodeList = parentNode.querySelectorAll(childNodeListType);
 
-  UILabReview.orderByPatient(sortedListOfNodes);
-};
+    const sortedListOfNodes = SortAlgorithm.quickSort(
+      childNodeList,
+      0,
+      childNodeList.length - 1,
+      UILabReview.getProviderValue
+    );
 
-UILabReview.sortByPatient = function(idOfParentNodeOfList, childNodeListType) {
-  let parentNode = document.querySelector(`#${idOfParentNodeOfList}`);
-  let childNodeList = parentNode.querySelectorAll(childNodeListType);
+    UILabReview.orderByPatient(sortedListOfNodes);
+  });
+}; // UILabReview.sortByProvider("ctl04", "table");
 
-  const sortedListOfNodes = SortAlgorithm.quickSort(
-    childNodeList,
-    0,
-    childNodeList.length - 1,
-    UILabReview.getPatientName
-  );
+UILabReview.sortByPatient = function(idOfContainer, childNodeListType) {
+  let container = document.querySelector(`#${idOfContainer}`);
+  let parentNodes = container.querySelectorAll(`div`);
+
+  parentNodes.forEach(function(parentNode) {
+    let childNodeList = parentNode.querySelectorAll(childNodeListType);
+
+    const sortedListOfNodes = SortAlgorithm.quickSort(
+      childNodeList,
+      0,
+      childNodeList.length - 1,
+      UILabReview.getPatientName
+    );
+  });
 };
